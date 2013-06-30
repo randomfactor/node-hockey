@@ -1,0 +1,9 @@
+Steps in this tutorial:
+
+	1. Incorporate Bootstrap for some simple style
+	2. Add Emberjs
+	3. Create simple startup page and playing field
+	4. Add session state implemented with Redis
+	5. Add game state storage in CouchDB
+	6. Implement player movement
+

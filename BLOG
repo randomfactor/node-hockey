@@ -1,0 +1,43 @@
+Prerequisites:
+
+	* CouchDB v1.2.1
+	* Redis v2.6.14
+	* nvm
+	* node v0.10.12
+	* express 
+
+	$ nvm use 0.10.12
+
+Create express project:
+
+	$ cd src
+	$ express -css stylus hockey
+	$ cd express
+	$ mv public/javascripts public/js
+	$ mv public/stylesheets public/css
+	$ mv public/images public/img
+	$ npm install
+
+	$ echo node_modules/ > .gitignore
+	$ pluma README.md
+
+Create GitHub project:
+
+	$ git init
+	$ git add --all
+	$ git status
+	$ git commit -m "node-hockey: a simple skeleton project sample"
+	$ git remote add origin https://github.com/randomfactor/node-hockey.git
+	$ git push -u origin master
+		| Username for 'https://github.com': randumfaktor@gmail.com
+		| Password for 'https://randumfaktor@gmail.com@github.com': 
+		| To https://github.com/randomfactor/node-hockey.git
+		|  * [new branch]      master -> master
+		| Branch master set up to track remote branch master from origin.
+
+Add Twitter Bootstrap
+
+    # merge into public/{css,js,img} directories
+
+    $ ... git commit
+    $ git tag -a 'Step 01' -m 'Add Twitter Bootstrap'
