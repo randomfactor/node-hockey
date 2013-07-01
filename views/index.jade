@@ -1,5 +1,68 @@
 extends layout
 
+block append head
+//- additional scripts
+
 block content
-  h1= title
-  p Welcome to #{title}
+    #content.container
+
+
+    //- handlebars templates for node-hockey application
+    script(type="text/x-handlebars", data-template-name="application")
+        {{outlet}}
+
+    script(type="text/x-handlebars", data-template-name="index")
+        .hero-unit
+          h1 Introduction
+          p
+            | This is an experimental single-page project written in Coffee-Script.
+            | The server is a small Node.js application also written in Coffee-Script
+            | which maintains the game state, player positions, and the score.
+          p
+            a.btn.btn-primary.btn-large Learn more &raquo;
+        .row
+          .span4
+            h2 Choose Name
+            p
+              | Pick a "handle" that you'll be known by while playing the hockey
+              | game. This is not a log in; just a name that will be displayed
+              | to other players as the game progresses.
+          .span4
+            h2 Choose Rink
+            p
+              | Pick a rink to play. The rink list shows the games starting soon.
+              | If there are no games starting soon, then congratulations! You are
+              | the first player and you can create a rink specifying the names
+              | of the hockey teams competing and the maximum number of players per
+              | team. The game will begin when the rink is full, or when the waiting timer
+              | reaches 0.
+          .span4
+            h2 Rinks
+            p
+              ul#rinks
+                li Blackhawks vs. Bruins
+                  | <br/> (closed)
+                li Red Wings vs. Islanders
+                  | <br /> 42s (4 x 4)
+
+
+    script(type='text/x-handlebars', data-template-name='play')
+        #game-panel.img-rounded
+          .row
+            .indicators.span5.offset1.img-rounded
+              #hometeam Blackhawks
+              h3
+                span#hometeam-score 0
+            .indicators.span5.img-rounded.text-right
+              #opponent Bruins
+              h3
+                span#opponent-score 0
+          .row
+            .arena.span10.offset1.img-rounded
+              canvas#playground
+
+
+
+block append postscript
+    script(src="js/app.js")
+

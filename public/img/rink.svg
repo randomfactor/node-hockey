@@ -1,0 +1,25 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+        "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="1780" height="850" version="1.1"
+     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <desc>node-hockey rink</desc>
+    <!-- Show outline of canvas using 'rect' element -->
+    <rect x="0" y="0" width="1779" height="850" fill="none" stroke="black" stroke-width="3" />
+    <line x1="640" y1="0" x2="640" y2="850" stroke="blue" stroke-width="10" opacity="0.4"/>
+    <line x1="1140" y1="0" x2="1140" y2="850" stroke="blue" stroke-width="10" opacity="0.4"/>
+    <line x1="890" y1="0" x2="890" y2="850" stroke="red" stroke-dasharray="38.63636,19.31313" stroke-width="10" opacity="0.4"/>
+    <circle cx="890" cy="425" r="85" stroke="violet" stroke-width="10" fill="none" opacity="0.4"/>
+    <g id="l-rink">
+        <g id="tl-rink">
+            <circle cx="300" cy="200" r="140" stroke="red" stroke-width="10" fill="none" opacity="0.4"/>
+            <circle cx="300" cy="200" r="10" fill="red" opacity="0.4"/>
+            <circle cx="690" cy="200" r="10" fill="red" opacity="0.4"/>
+            <polyline fill="none" stroke="black" stroke-width="10"
+                      points="1140,5 5,5 5,340 20,340"/>
+        </g>
+        <use xlink:href="#tl-rink" transform="translate(0, 850) scale(1.0, -1.0)" />
+        <circle cx="0" cy="425" r="85" stroke="blue" stroke-width="10" fill="none" opacity="0.4"/>
+    </g>
+    <use xlink:href="#l-rink" transform="translate(1780, 0) scale(-1.0, 1.0)" />
+</svg>

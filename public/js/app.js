@@ -1,7 +1,10 @@
-App = Ember.Application.create();
+App = Ember.Application.create({
+    rootElement: '#content'
+});
 
 App.Router.map(function() {
-  // put your routes here
+    this.route('index');
+    this.route('play');
 });
 
 App.IndexRoute = Ember.Route.extend({

@@ -23,9 +23,13 @@ app.use(app.router);
 app.use(require('stylus').middleware(__dirname + '/public'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
+  app.set('enableTest', true);
+  app.set('view options', { pretty: true });
+  app.locals.pretty = true;
 }
 
 app.get('/', routes.index);

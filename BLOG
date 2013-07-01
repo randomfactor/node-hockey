@@ -41,3 +41,14 @@ Add Twitter Bootstrap
 
     $ ... git commit
     $ git tag -a 'Step 01' -m 'Add Twitter Bootstrap'
+	$ git push -u origin master
+
+    # undesirable to type username and password for every push.
+    # deleted local copy, then 'git clone git@github.com:randomfactor/node-hockey.git hockey'
+
+Add Emberjs
+
+    # get Ember starter kit 1.0 RC6
+    # merge js into public/js
+    # copy index.html into public
+
