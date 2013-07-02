@@ -2,9 +2,11 @@ Steps in this tutorial:
 
 x	1. Incorporate Bootstrap for some simple style
 x	2. Add Emberjs
-	3. Create simple startup page and playing field
-	4. Rewrite app in coffeescript
-	5. Add session state implemented with Redis
-	6. Add game state storage in CouchDB
-	7. Implement player movement
+x	3. Create simple startup page and playing field
+x	4. Rewrite app in coffeescript
+    5. Add client-side tests in jasmine
+    6. Add server tests in mocha
+	7. Add session state implemented with Redis
+	8. Add game state storage in CouchDB
+	9. Implement player movement
 

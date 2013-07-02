@@ -52,3 +52,12 @@ Add Emberjs
     # merge js into public/js
     # copy index.html into public
 
+Convert to coffee-script
+
+    $ sudo npm install -g coffee-script
+    $ npm install connect-assets
+    $ mkdir assets/css assets/js
+    $ rm js/app.js css/style.css
+
+    # add assets/css/style.styl assets/js/app.coffee
+    # rewrite app.js as server.coffee and modify project to suit
