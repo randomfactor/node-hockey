@@ -1,0 +1,50 @@
+//
+   Created with JetBrains WebStorm.
+   User: randall
+   Date: 7/3/13
+   Time: 12:26 AM
+   To change this template use File | Settings | File Templates.
+
+doctype 5
+html
+    head
+        meta(charset="utf-8")
+        title= Test
+        link(rel='stylesheet', href='css/jasmine.css')
+    body
+        h1 Node Hockey Tests
+        p These are my tests
+
+        script(src="js/test/jasmine.js")
+        script(src="js/test/jasmine-html.js")
+
+        != js('app')
+        != js('test/cli-test')
+
+        script(type="text/javascript")
+            (function() {
+                var jasmineEnv = jasmine.getEnv();
+                jasmineEnv.updateInterval = 1000;
+
+                var htmlReporter = new jasmine.HtmlReporter();
+
+                jasmineEnv.addReporter(htmlReporter);
+
+                jasmineEnv.specFilter = function(spec) {
+                  return htmlReporter.specFilter(spec);
+                };
+
+                var currentWindowOnload = window.onload;
+
+                window.onload = function() {
+                  if (currentWindowOnload) {
+                    currentWindowOnload();
+                  }
+                  execJasmine();
+                };
+
+                function execJasmine() {
+                  jasmineEnv.execute();
+                }
+
+            })();

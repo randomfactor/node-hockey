@@ -31,6 +31,7 @@ app.configure 'development', ->
   app.set 'enableTest', true
   app.set 'view options', { pretty: true }
   app.locals.pretty = true
+  app.get '/test', routes.test
 
 app.configure ->
   app.get '/', routes.index
