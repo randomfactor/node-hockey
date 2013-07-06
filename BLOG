@@ -61,3 +61,28 @@ Convert to coffee-script
 
     # add assets/css/style.styl assets/js/app.coffee
     # rewrite app.js as server.coffee and modify project to suit
+
+Add client-side Jasmine test
+
+    # Download standalone Jasmine archive
+    # jasmine.css -> public/css
+    # jasmine.js, jasmine-html.js -> public/js/test
+    # add route for /test
+    # add test.jade to views/test
+    # visit http://lvh.me:3000/test to run client test
+
+Add server-side Jasmine test
+
+    $ sudo npm install -g jasmine-node
+    # mkdir spec
+    # svr-spec.coffee to hold first tests
+    $ jasmine-node --coffee spec   # run tests
+    $ sudo npm install -g grunt-cli
+    $ npm install grunt grunt-jasmine-node           # add grunt to package.json
+    # Gruntfile.coffee to run server-side tests
+    $ grunt jasmine_node        # runs the tests in spec directory
+
+
+
+
+
