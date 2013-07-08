@@ -82,7 +82,17 @@ Add server-side Jasmine test
     # Gruntfile.coffee to run server-side tests
     $ grunt jasmine_node        # runs the tests in spec directory
 
+Figuring out model
 
+    # get Ember Model from https://github.com/ebryn/ember-model
+    # js/libs/ember-model-20130707.js
 
+Session state with Redis
 
+    $ npm install connect-redis --save
+    # routes/index.coffee:
+    #     req.session['playerName'] = 'anonymous' if not req.session['playerName']?
+    # redis-cli
+    #   redis 127.0.0.1:6379> select 2
+    #   redis 127.0.0.1:6379[2]> keys *
 

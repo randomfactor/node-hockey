@@ -4,12 +4,25 @@ block append head
 //- additional scripts
 
 block content
-    #content.container
-
+    #content
 
     //- handlebars templates for node-hockey application
     script(type="text/x-handlebars", data-template-name="application")
-        {{outlet}}
+        .navbar.navbar-inverse.navbar-fixed-top
+            .navbar-inner
+                .container
+                    a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+                        span.icon-bar
+                        span.icon-bar
+                        span.icon-bar
+                    a.brand(href='/')= title
+                    .nav-collapse.collapse
+                        ul.nav
+                            li {{#linkTo 'index'}}Home{{/linkTo}}
+                            li {{#linkTo 'play'}}Play Hockey{{/linkTo}}
+
+        #main
+            {{outlet}}
 
     script(type="text/x-handlebars", data-template-name="index")
         .hero-unit
@@ -60,6 +73,11 @@ block content
           .row
             .arena.span10.offset1.img-rounded
               canvas#playground
+          .row &nbsp;
+          .row
+            .offset1
+              p Net Lag: {{netLag}}
+
 
 
 

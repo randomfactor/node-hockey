@@ -6,23 +6,10 @@ html
         link(rel='stylesheet', href='/css/bootstrap.css')
         != css('style')
     body
-        block navbar
-        .navbar.navbar-inverse.navbar-fixed-top
-            .navbar-inner
-                .container
-                    a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
-                        span.icon-bar
-                        span.icon-bar
-                        span.icon-bar
-                    a.brand(href='/')= title
-                    .nav-collapse.collapse
-                        ul.nav
-                            li.active
-                                a(href='#/index') Home
-                            li
-                                a(href='#/play') Play Hockey
-        block content
-            #content
+        .container
+            block content
+                #content
+
 
         block postscript
             script(src="js/libs/jquery-1.9.1.js")

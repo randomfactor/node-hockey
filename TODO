@@ -4,9 +4,9 @@ x	1. Incorporate Bootstrap for some simple style
 x	2. Add Emberjs
 x	3. Create simple startup page and playing field
 x	4. Rewrite app in coffeescript
-    5. Add client-side tests in jasmine
-    6. Add server tests in mocha
-	7. Add session state implemented with Redis
+x   5. Add client-side tests in jasmine
+x   6. Add server tests in jasmine
+x	7. Add session state implemented with Redis
 	8. Add game state storage in CouchDB
 	9. Implement player movement
 

@@ -9,6 +9,7 @@ user = require './routes/user'
 http = require 'http'
 path = require 'path'
 assets = require 'connect-assets'
+sessStore = require('connect-redis')(express)
 
 app = express()
 
@@ -20,6 +21,8 @@ app.configure ->
   app.use express.logger('dev')
   app.use express.bodyParser()
   app.use express.methodOverride()
+  app.use express.cookieParser()
+  app.use express.session { secret: "bodyCheckingNodeHockey", store: new sessStore { db: 2 } }
   app.use app.router
   app.use require('stylus').middleware(__dirname + '/public')
   app.use express.static(path.join(__dirname, 'public'))
@@ -36,6 +39,7 @@ app.configure 'development', ->
 app.configure ->
   app.get '/', routes.index
   app.get '/users', user.list
+  app.get '/ping', routes.ping
 
 http.createServer(app).listen app.get('port'), ->
   console.log "Express server listening on port #{ app.get 'port' }"

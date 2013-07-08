@@ -7,3 +7,7 @@ App.Router.map () ->
 App.IndexRoute = Ember.Route.extend {
   model: () -> ['red', 'yellow', 'blue']
 }
+
+App.PlayRoute = Ember.Route.extend  {
+  model: () -> { netLag: "0.078" }
+}

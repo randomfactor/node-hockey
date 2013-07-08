@@ -2,3 +2,5 @@ node_modules/
 .idea/workspace.xml
 .idea/tasks.xml
 public/css/style.css
+build/
+distr/
