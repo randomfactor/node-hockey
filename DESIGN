@@ -1,0 +1,53 @@
+Server Side
+------ ----
+
+RinkState
+  id
+  creation_ts
+  home_team_name
+  visiting_team_name
+  home_team_players
+    [[num, handle, session_id], ...]
+  visiting_team_players
+    [[num, handle, session_id], ...]
+  max_players_per_team
+  score_to_win
+
+GameState
+  id
+  rink_state_id
+  start_ts
+  current_tick
+  home_team_players
+    [[num, player_status, position, velocity, acceleration, active_ts], ...]
+  visiting_team_players
+    [[num, player_status, position, velocity, acceleration, active_ts], ...]
+  puck
+    [puck_status, position, velocity, acceleration]
+  home_team_score
+  visiting_team_score
+
+Client Side
+------ ----
+  rink_state_id
+  game_state_id
+  player_num
+
+  game_state
+
+
+User Story 001
+---- ----- ---
+1) Player picks rink with open player slot
+2) Rink is drawn with player positions determined by game_state
+3) game_state sent over web socket each tick
+4) Player quits
+5) Web socket disconnect
+6) Player sees rink list
+
+User Story 002
+---- ----- ---
+1) Player in live rink at P(100,100), V(0,0)
+2) Player sets acceleration A(1, 0)
+3) Player's position increases parallel to x axis.
+

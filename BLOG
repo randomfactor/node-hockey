@@ -96,3 +96,10 @@ Session state with Redis
     #   redis 127.0.0.1:6379> select 2
     #   redis 127.0.0.1:6379[2]> keys *
 
+Model storage with CouchDB
+
+    # http://mircozeiss.com/async-couchdb-queries-with-nano-and-promises/
+    $ npm install nano --save
+    $ npm install q --save
+    # get Math.uuid() from https://gist.github.com/ne-sachirou/882192
+

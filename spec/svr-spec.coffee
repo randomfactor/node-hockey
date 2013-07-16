@@ -1,4 +1,4 @@
-game = require '../lib/GameState'
+game = require '../lib/game-state'
 
 describe "A suite", ->
   it "contains spec with an expectation", (done) ->

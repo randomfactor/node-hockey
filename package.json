@@ -16,6 +16,9 @@
     "jade": "*",
     "stylus": "*",
     "connect-assets": "~2.4.3",
-    "connect-redis": "~1.4.5"
+    "connect-redis": "~1.4.5",
+    "nano": "~4.0.0",
+    "q": "~0.9.6",
+    "then-couchdb": "~0.3.9"
   }
 }

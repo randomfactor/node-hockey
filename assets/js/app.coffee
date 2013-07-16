@@ -11,3 +11,7 @@ App.IndexRoute = Ember.Route.extend {
 App.PlayRoute = Ember.Route.extend  {
   model: () -> { netLag: "0.078" }
 }
+
+App.PlayController = Ember.ObjectController.extend {
+
+}
