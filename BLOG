@@ -105,8 +105,7 @@ Model storage with CouchDB
 
 Design doc in CouchDB
 
-    $ npm install grunt-couchapp --save-dev
-    # https://github.com/mikeal/node.couchapp.js
+    # https://npmjs.org/package/couchapp
     $ npm install couchapp
-    $ cd couchdb
-    $ ../node_modules/.bin/couchapp push app.js http://randall:realsoon@localhost:5984/node-hockey
+    # https://gist.github.com/randomfactor/6022980
+    $ grunt designdoc_couchdb
