@@ -103,3 +103,10 @@ Model storage with CouchDB
     $ npm install q --save
     # get Math.uuid() from https://gist.github.com/ne-sachirou/882192
 
+Design doc in CouchDB
+
+    $ npm install grunt-couchapp --save-dev
+    # https://github.com/mikeal/node.couchapp.js
+    $ npm install couchapp
+    $ cd couchdb
+    $ ../node_modules/.bin/couchapp push app.js http://randall:realsoon@localhost:5984/node-hockey

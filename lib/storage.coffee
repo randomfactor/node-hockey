@@ -15,5 +15,8 @@ class Storage
   save: (doc) ->
     @db.save(doc)
 
+  get_active_gamestates: ->
+    @db.view 'app/gamestateByStart', { descending: true, limit: 20 }
+
 
 exports.Storage = Storage

@@ -9,6 +9,8 @@ class GameState
   constructor: ->
     @_id = Math.uuid()
     @type = this.constructor.name
+    @start_ts = new Date()
+    @current_tick = 0
     @home_team = [ 'P1', 'P4' ]
     @visiting_team = [ 'P2', 'P3' ]
 

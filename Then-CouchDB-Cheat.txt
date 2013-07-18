@@ -1,0 +1,60 @@
+then-couchdb
+
+couchdb = require('then-couchdb')
+db = couchdb.createClient('http://localhost:5984/node-hockey')
+
+url = db.url 				# readonly
+isSecure = db.isSecure 		# readonly
+
+db.useCache cacheImplementation
+db.stopCaching()
+promiseGeneric = db.rootRequest options
+promiseUuidArray = db.uuids count
+promiseUuid = db.uuid()
+
+promiseDbNameArray = db.allDbs()
+promiseGeneric = db.request(options)
+promiseDbInfo = db.info()
+promiseInfo = db.create()
+promiseInfo = db.destroy()
+
+promiseDoc = db.save(doc)
+promiseDocs = db.saveAll(docs)
+promiseDoc = db.update('ddocName/updHandlerName', updHandlerDoc)
+promiseDocHead = db.head(key, query)
+promiseDoc = db.get(key, query)
+promiseDocs = db.getAll(keys)
+
+query = {
+	descending: truthy,
+	endkey: keyform,
+	endkey_docid: stopDocId,
+	group: truthy,
+	group_level: smallInteger,
+	include_docs: truthy,
+	inclusive_end: truthy,
+	key: docKey,
+	limit: maxDocs,
+	reduce: truthy,
+	skip: numToSkip,
+	stale: truthy,
+	startkey: keyform,
+	startkey_docid, startDocId,
+	update_seq: truthy
+};
+promiseView = db.view('ddocName/viewName', query)
+promiseRows = db.viewRows('ddocName/viewName', query)
+promiseKeys = db.viewKeys('ddocName/viewName', query)
+promiseVals = db.viewValues('ddocName/viewName', query)
+promiseDocs = db.viewDocs('ddocName/viewName', query)
+promiseFirstDoc = db.viewDoc('ddocName/viewName', query)
+promiseDocs = db.allDocs(query)
+
+promiseResponse = db.getAttachment(doc, name)
+promiseResponse = db.putAttachment(doc, name, type, size, body)
+promiseDoc = db.deleteAttachment(doc, name)
+
+promiseOrEmitter = db.changes(query)
+
+
+

@@ -14,5 +14,24 @@ describe "Savespec", ->
       (err) ->
         console.log "error: "
         console.dir err
+        expect(err).toBeUndefined()
+        done()
+    )
+
+describe "Indexspec", ->
+  it "gets the 20 most recent documents", (done) ->
+    dbc = new stor.Storage()
+    p = dbc.get_active_gamestates()
+    p.then(
+      (body_arr) ->
+        #console.dir body_arr
+        expect(body_arr?.total_rows).not.toBeUndefined()
+        expect(body_arr?.total_rows).not.toBeNull()
+        expect(body_arr.rows.length).toBeGreaterThan(0)
+        done()
+      (err) ->
+        console.log "error: "
+        console.dir err
+        expect(err).toBeUndefined()
         done()
     )
