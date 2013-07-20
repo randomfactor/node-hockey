@@ -9,16 +9,31 @@ describe 'Rink rendering tests', ->
     r = new Rink 'P1'
     r.render(gs)
     expect(2 + 3).toEqual(5)
+  it 'moves a player to the left', () ->
+    gs = test_state[0]
+    posx = gs.visiting_team_players[0].position.x
+    r = new Rink 'P1'
+    @done = false
+
+    @draw_next = ->
+      gs.visiting_team_players[0].position.x -= 15
+      r.render(gs)
+      @done = true if gs.visiting_team_players[0].position.x < posx - 150
+      clearInterval job if @done
+
+    job = setInterval (() => @draw_next()), 1000/30
+    waitsFor (() => @done), "this is taking too long", 8 * 1000
+    expect(3 + 5).toEqual(8)
 
 test_state = [
   {
     current_tick: 1374287941943
     home_team_players: [
-      { name: 'P1', player_status: 'active', position: new Pt(-0.5, -0.1), velocity: new Pt(0, 0), acceleration: new Pt(0, 0), active_ts: 1374287939999  }
+      { name: 'P1', player_status: 'active', position: new Pt(-500, -100), velocity: new Pt(0, 0), acceleration: new Pt(0, 0), active_ts: 1374287939999  }
     ]
     visiting_team_players: [
-      { name: 'P3', player_status: 'active', position: new Pt(0.5, 0.1), velocity: new Pt(0, 0), acceleration: new Pt(0, 0), active_ts: 1374287939999  }
-      { name: 'P2', player_status: 'active', position: new Pt(-0.46, -0.12), velocity: new Pt(0, 0), acceleration: new Pt(0, 0), active_ts: 1374287939999  }
+      { name: 'P3', player_status: 'active', position: new Pt(500, 100), velocity: new Pt(0, 0), acceleration: new Pt(0, 0), active_ts: 1374287939999  }
+      { name: 'P2', player_status: 'active', position: new Pt(460, -120), velocity: new Pt(0, 0), acceleration: new Pt(0, 0), active_ts: 1374287939999  }
     ]
     puck: { puck_status: 'active', position: new Pt(0, 0), velocity: new Pt(0, 0) }
   }
