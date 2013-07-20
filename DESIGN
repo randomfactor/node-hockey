@@ -23,7 +23,7 @@ GameState
   visiting_team_players
     [[num, player_status, position, velocity, acceleration, active_ts], ...]
   puck
-    [puck_status, position, velocity, acceleration]
+    [puck_status, position, velocity]
   home_team_score
   visiting_team_score
 

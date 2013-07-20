@@ -11,14 +11,26 @@ html
         meta(charset="utf-8")
         title= Test
         link(rel='stylesheet', href='css/jasmine.css')
+        link(rel='stylesheet', href='/css/bootstrap.css')
+        != css('style')
     body
-        h1 Node Hockey Tests
-        p These are my tests
+        #content
+            h1 Node Hockey Tests
+            p These are my tests
+        .row
+            .arena.span10.offset1.img-rounded
+                canvas#playground(width='780', height='374')
 
         script(src="js/test/jasmine.js")
         script(src="js/test/jasmine-html.js")
 
+        script(src="js/libs/jquery-1.9.1.js")
+        script(src="js/libs/handlebars-1.0.0-rc.4.js")
+        script(src="js/libs/ember-1.0.0-rc.6.js")
+        script(src="js/libs/ember-data-0.13.js")
+
         != js('app')
+        != js('rink')
         != js('test/cli-test')
 
         script(type="text/javascript")
