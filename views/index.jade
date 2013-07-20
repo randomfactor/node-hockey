@@ -63,20 +63,23 @@ block content
         #game-panel.img-rounded
           .row
             .indicators.span5.offset1.img-rounded
-              #hometeam Blackhawks
+              #hometeam {{homeTeamName}}
               h3
-                span#hometeam-score 0
+                span#hometeam-score {{homeTeamScore}}
             .indicators.span5.img-rounded.text-right
-              #opponent Bruins
+              #opponent {{visitingTeamName}}
               h3
-                span#opponent-score 0
+                span#opponent-score {{visitingTeamScore}}
           .row
             .arena.span10.offset1.img-rounded
               canvas#playground
           .row &nbsp;
           .row
             .offset1
-              p Net Lag: {{netLag}}
+              label
+                {{view Ember.Checkbox checkedBinding="showNetLag"}}
+                | Net Lag:&nbsp;
+                span#net-lag N/A
 
 
 
