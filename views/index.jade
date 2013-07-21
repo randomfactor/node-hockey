@@ -72,18 +72,20 @@ block content
                 span#opponent-score {{visitingTeamScore}}
           .row
             .arena.span10.offset1.img-rounded
-              canvas#playground
+              canvas#playground(width='780', height='374')
           .row &nbsp;
           .row
-            .offset1
+            .offset1.span4
               label
                 {{view Ember.Checkbox checkedBinding="showNetLag"}}
                 | Net Lag:&nbsp;
                 span#net-lag N/A
-
-
+            .span4
+              | <button id='start-rink' {{bindAttr disabled="cannotStart"}} {{action 'startWatching'}}>Start</button>
+              | <button id='stop-rink' {{bindAttr disabled="canStart"}} {{action 'stopWatching'}}>Stop</button>
 
 
 block append postscript
+    != js('rink')
     != js('app')
 

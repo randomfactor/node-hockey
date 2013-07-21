@@ -21,6 +21,7 @@ exports.gamestate = (req, res) ->
   # console.dir req.params
   gs = gmst.GameState.find_by_id(req.params.id)
   if gs?
+    gs.update()
     res.json(gs)
   else
     res.status(404).send('Not found.')

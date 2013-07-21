@@ -14,7 +14,23 @@ _font_pt = 48
 
 class Rink
   # player id used to highlight this player (P1, P2, etc.)
-  constructor: (@player_id) ->
+  constructor: (@player_id, @game_state_id) ->
+    @is_watching = false
+
+  start_watching: ->
+    unless @is_watching
+      @is_watching = true
+      @watch_timer_id = setInterval (=> @watch()), 1000 / 30
+
+  stop_watching: ->
+    if @is_watching
+      @is_watching = false
+      clearInterval @watch_timer_id
+
+  watch: ->
+    $.get "/gs/#{@game_state_id}", (data) =>
+      console.dir(data.home_team_players[0].position.x)
+      @render(data)
 
   # render uses the gamestate (gs) from the server to render all
   # player positions and the puck

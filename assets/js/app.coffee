@@ -60,6 +60,27 @@ App.PlayController = Ember.ObjectController.extend {
       msArray.push new Date().getTime() - @lagStart
       $('#net-lag').text @netLag()
     setTimeout (() => @measureNetLag()), 3000 if @showNetLag
+
+  rink: null
+
+  cannotStart: ( ->
+    @get('rink')?
+  ).property('rink')
+
+  canStart: ( ->
+    not @get('rink')?
+  ).property('rink')
+
+  startWatching: ->
+    @set 'rink', new Rink 'P1', '23'
+    @get('rink').start_watching()
+
+  stopWatching: ->
+    @get('rink').stop_watching()
+    @set 'rink', null
+
+
+
 }
 
 window.App = App                         # for debugging

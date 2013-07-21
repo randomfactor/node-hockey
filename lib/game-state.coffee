@@ -122,7 +122,8 @@ class GameState
     if id is '23'
       rslt = new GameState()
       rslt._id = '23'
-      rslt.add_player "P1", true
+      p = rslt.add_player "P1", true
+      p.velocity.set 20, -5
       @active_games.push rslt
       return rslt
     undefined
