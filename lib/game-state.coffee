@@ -5,9 +5,6 @@
 
 uuid = require '../lib/math-uuid'
 
-_max_velocity = 400               # units per second
-_max_acceleration = 80            # units per second per second
-
 class Vector
   constructor: (@x=0, @y=0) ->
     if typeof @x is "object"
@@ -25,15 +22,15 @@ class Vector
 
   regulate_velocity: ->
     sum_squares = @x * @x + @y * @y
-    if sum_squares > _max_velocity * _max_velocity
-      factor = Math.sqrt(_max_velocity * _max_velocity / sum_squares)
+    if sum_squares > MAX_VELOCITY * MAX_VELOCITY
+      factor = Math.sqrt(MAX_VELOCITY * MAX_VELOCITY / sum_squares)
       @x = @x * factor
       @y = @y * factor
     this
 
   regulate_acceleration: (v0) ->
     amag_projected = @dot_product(v0) / v0.magnitude()
-    max_accel_at_velocity = 2 * (_max_velocity - v0.magnitude())
+    max_accel_at_velocity = 2 * (MAX_VELOCITY - v0.magnitude())
     if amag_projected > max_accel_at_velocity
       # reduce projected accel, but allow perpendicular accel
       aproj = v0.scale(amag_projected / v0.magnitude())
@@ -66,17 +63,8 @@ class GameState
     @_id = Math.uuid()
     @type = this.constructor.name
     @start_ts = new Date()
-    @current_tick = @tickFromDate @start_ts
-    @home_team_players = [
-      {
-        name: 'P1'
-        player_status: 'active'
-        position: new Vector -800, 50
-        velocity: new Vector 1, 0
-        acceleration: new Vector()
-        active_ts: new Date()
-      }
-    ]
+    @current_tick = @tick_from_date @start_ts
+    @home_team_players = [ ]
     @visiting_team_players = [ ]
     @puck = {
       puck_status: 'active'
@@ -88,26 +76,61 @@ class GameState
 
   @active_games = []
 
+  update: (next_tick) ->
+    next_tick = @tick_from_date new Date() unless next_tick?
+    if next_tick > @current_tick
+      @update_player_position(p, @current_tick, next_tick) for p in @home_team_players
+      @update_player_position(p, @current_tick, next_tick) for p in @visiting_team_players
+      @update_puck_position @current_tick, next_tick
+      @current_tick = next_tick
+
+  add_player: (name, is_homey) ->
+    new_player = {
+      name: name
+      player_status: 'active' # TODO: change to 'rezzing'
+      position: new Vector (if is_homey then -800 else 800), 50
+      velocity: new Vector()
+      acceleration: new Vector()
+      active_ts: new Date()
+    }
+    if is_homey
+      @home_team_players.push new_player
+    else
+      @visiting_team_players.push new_player
+    new_player
+
   update_player_position: (p, t0, t1) ->
     delta_t = (t1 - t0) / 30.0
     p.acceleration.regulate_acceleration p.velocity
     p.position.set Vector.compute_position p.position, p.velocity, p.acceleration, delta_t
     p.velocity.set Vector.compute_velocity p.velocity, p.acceleration, delta_t
     p.velocity.regulate_velocity
+    p
 
-  tickFromDate: (d) ->
-    d.getTime() * 30 / 1000
+  update_puck_position: (t0, t1) ->
+    delta_t = (t1 - t0) / 30.0
+    # TODO:
+    @puck.position.set Vector.compute_position @puck.position, @puck.velocity, ZERO_ACCELERATION, delta_t
+    @puck
 
-  @findById: (id) ->
-    rslt = gm for gm in @active_games when gm._id is id
+  tick_from_date: (d) ->
+    Math.round(d.getTime() * 30 / 1000)
+
+  @find_by_id: (id) ->
+    rslt = (gm for gm in @active_games when gm._id is id)
     return rslt[0] if rslt?.length >= 1
     if id is '23'
       rslt = new GameState()
       rslt._id = '23'
+      rslt.add_player "P1", true
       @active_games.push rslt
-      console.dir @active_gamees
       return rslt
     undefined
+
+ZERO_ACCELERATION = new Vector()
+MAX_VELOCITY = 400 # units per second
+MAX_ACCELERATION = 80 # units per second per second
+
 
 exports.GameState = GameState
 exports.Vector = Vector

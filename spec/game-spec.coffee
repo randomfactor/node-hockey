@@ -1,6 +1,7 @@
 game = require '../lib/game-state'
 Vector = game.Vector
 GameState = game.GameState
+util = require 'util'
 
 describe "Vector constructor", ->
   it "defaults to the origin", ->
@@ -46,7 +47,7 @@ describe "Vector operations", ->
     expect(v1.magnitude()).not.toBeGreaterThan 400
 
 
-describe "Gamespec", ->
+describe "Calculate player next position", ->
   it "computes the next player position (constant velocity)", (done) ->
     gs = new GameState()
     p = reinflate_player jcopy players[0]
@@ -68,6 +69,27 @@ describe "Gamespec", ->
       gs.update_player_position p, tick, tick + 1
     expect(p.acceleration.x).toBeCloseTo 0, 2
     done()
+
+describe "Game state", ->
+  it "finds game 23", ->
+    gs23 = GameState.find_by_id('23')
+    expect(gs23).not.toBeUndefined
+    expect(GameState.active_games.length).toBe(1)
+    gs = GameState.find_by_id('23')
+    expect(gs).toBe(gs23)
+    expect(GameState.active_games.length).toBe(1)
+  it "doesn't find game 24", ->
+    gs = GameState.find_by_id('24')
+    expect(gs).toBeUndefined()
+  it "updates itself for the next tick", ->
+    gs = new GameState()
+    playa = gs.add_player 'P1', true
+    xpos = playa.position.x
+    gs.home_team_players[0].velocity = new Vector 100, 0
+    gs.update gs.current_tick + 30
+    #console.log util.inspect gs, { depth: 8 }
+    expect(playa.position.x).toBe(xpos + 100)
+
 
 players = [
   { name: 'P3', player_status: 'active', position: new Vector(-500, 0), velocity: new Vector(400, 0), acceleration: new Vector(0, 0), active_ts: 1374287939999  }

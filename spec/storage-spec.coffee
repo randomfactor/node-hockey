@@ -1,7 +1,7 @@
 stor = require '../lib/storage'
 game = require '../lib/game-state'
 
-xdescribe "Savespec", ->
+describe "Savespec", ->
   it "saves a simple document", (done) ->
     dbc = new stor.Storage()
     gs = new game.GameState()
@@ -18,7 +18,7 @@ xdescribe "Savespec", ->
         done()
     )
 
-xdescribe "Indexspec", ->
+describe "Indexspec", ->
   it "gets the 20 most recent documents", (done) ->
     dbc = new stor.Storage()
     p = dbc.get_active_gamestates()

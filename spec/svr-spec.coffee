@@ -1,9 +1,9 @@
 game = require '../lib/game-state'
 
-xdescribe "A suite", ->
+describe "A suite", ->
   it "contains spec with an expectation", (done) ->
     gs = new game.GameState()
-    expect(gs.home_team.length).toBe 2
+    expect(gs.home_team_players.length).toBe 0
     done()
 
   it "The 'toBeCloseTo' matcher is for precision math comparison", ->

@@ -18,9 +18,8 @@ exports.ping = (req, res) ->
     server_time: Date.now()
 
 exports.gamestate = (req, res) ->
-  #console.dir req.params
-  console.dir req.params.id
-  gs = gmst.GameState.findById(req.params.id)
+  # console.dir req.params
+  gs = gmst.GameState.find_by_id(req.params.id)
   if gs?
     res.json(gs)
   else
