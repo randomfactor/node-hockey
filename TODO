@@ -8,5 +8,11 @@ x   5. Add client-side tests in jasmine
 x   6. Add server tests in jasmine
 x	7. Add session state implemented with Redis
 x	8. Add game state storage in CouchDB
-	9. Implement player movement
+x	9. Implement rink rendering
+	10. Implement (non-colliding) player position computation
+	11. Update game state when requested at /gs/:id
+	12. Implement player and puck wall collision
+	13. Implement collision between player and puck
+	14. Update players via websockets
+
 

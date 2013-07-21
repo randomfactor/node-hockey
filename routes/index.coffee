@@ -3,6 +3,8 @@
  * GET home page.
 ###
 
+gmst = require '../lib/game-state'
+
 exports.index = (req, res) ->
   req.session['playerName'] = 'anonymous' if not req.session['playerName']?
   res.render 'index', { title: 'Node-Hockey' }
@@ -14,3 +16,12 @@ exports.ping = (req, res) ->
   res.json
     ping: 'pong'
     server_time: Date.now()
+
+exports.gamestate = (req, res) ->
+  #console.dir req.params
+  console.dir req.params.id
+  gs = gmst.GameState.findById(req.params.id)
+  if gs?
+    res.json(gs)
+  else
+    res.status(404).send('Not found.')

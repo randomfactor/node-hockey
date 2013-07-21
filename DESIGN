@@ -19,9 +19,9 @@ GameState
   start_ts
   current_tick
   home_team_players
-    [[num, player_status, position, velocity, acceleration, active_ts], ...]
+    [[name, player_status, position, velocity, acceleration, active_ts], ...]
   visiting_team_players
-    [[num, player_status, position, velocity, acceleration, active_ts], ...]
+    [[name, player_status, position, velocity, acceleration, active_ts], ...]
   puck
     [puck_status, position, velocity]
   home_team_score
