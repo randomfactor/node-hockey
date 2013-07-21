@@ -17,19 +17,19 @@ describe "Vector constructor", ->
     expect(v.y).toBe 4
 
 describe "Vector operations", ->
-  xit "computes a new position", ->
+  it "computes a new position", ->
     p0 = new Vector(0, 16)
     v = new Vector(16, 0)
     a = new Vector(0, -32)
     p1 = Vector.compute_position p0, v, a, 1.0
     expect(p1.x).toBe 16
     expect(p1.y).toBeCloseTo 0, 2
-  xit "computes a new velocity", ->
+  it "computes a new velocity", ->
     v0 = new Vector(32, 0)
     a = new Vector(0, -32)
     v1 = Vector.compute_velocity v0, a, 1.0
     expect(v1).toEqual new Vector 32, -32
-  xit "throttles excessive velocity", ->
+  it "throttles excessive velocity", ->
     v = new Vector 400 * Math.sqrt(2) / 2, -400 * Math.sqrt(2) / 2
     a = new Vector 80 * Math.sqrt(2) / 2, -80 * Math.sqrt(2) / 2
     v1 = Vector.compute_velocity v, a, 1.0 / 30.0
@@ -47,14 +47,39 @@ describe "Vector operations", ->
 
 
 describe "Gamespec", ->
-  it "computes the next player position", (done) ->
-    p = jcopy players[0]
-    expect(p.position.x).toEqual(players[0].position.x)
+  it "computes the next player position (constant velocity)", (done) ->
+    gs = new GameState()
+    p = reinflate_player jcopy players[0]
+    for tick in [41231410239..41231410268]
+      gs.update_player_position p, tick, tick + 1
+    expect(p.position.x).toBeCloseTo players[0].position.x + 400, 5
+    done()
+  it "computes the next player position (constant acceleration)", (done) ->
+    gs = new GameState()
+    p = reinflate_player jcopy players[1]
+    for tick in [41231410239..41231410268]
+      gs.update_player_position p, tick, tick + 1
+    expect(p.position.x).toBeCloseTo players[1].position.x + 40, 5
+    done()
+  it "computes the next player position (max velocity)", (done) ->
+    gs = new GameState()
+    p = reinflate_player jcopy players[2]
+    for tick in [41231410239..41231410268]
+      gs.update_player_position p, tick, tick + 1
+    expect(p.acceleration.x).toBeCloseTo 0, 2
     done()
 
 players = [
   { name: 'P3', player_status: 'active', position: new Vector(-500, 0), velocity: new Vector(400, 0), acceleration: new Vector(0, 0), active_ts: 1374287939999  }
+  { name: 'P6', player_status: 'active', position: new Vector(-1000, 0), velocity: new Vector(0, 0), acceleration: new Vector(80, 0), active_ts: 1374287939999  }
+  { name: 'P7', player_status: 'active', position: new Vector(-1000, 0), velocity: new Vector(392, 0), acceleration: new Vector(72, 30), active_ts: 1374287939999  }
 ]
 
 jcopy = (obj) ->
   JSON.parse JSON.stringify obj
+
+reinflate_player = (p) ->
+  p.position = new Vector(p.position) if typeof p.position is 'object'
+  p.velocity = new Vector(p.velocity) if typeof p.velocity is 'object'
+  p.acceleration = new Vector(p.acceleration) if typeof p.acceleration is 'object'
+  p

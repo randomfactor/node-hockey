@@ -66,7 +66,7 @@ class GameState
     @_id = Math.uuid()
     @type = this.constructor.name
     @start_ts = new Date()
-    @current_tick = @start_ts.getTime() * 30 / 1000
+    @current_tick = @tickFromDate @start_ts
     @home_team_players = [
       {
         name: 'P1'
@@ -88,10 +88,19 @@ class GameState
 
   @active_games = []
 
+  update_player_position: (p, t0, t1) ->
+    delta_t = (t1 - t0) / 30.0
+    p.acceleration.regulate_acceleration p.velocity
+    p.position.set Vector.compute_position p.position, p.velocity, p.acceleration, delta_t
+    p.velocity.set Vector.compute_velocity p.velocity, p.acceleration, delta_t
+    p.velocity.regulate_velocity
+
+  tickFromDate: (d) ->
+    d.getTime() * 30 / 1000
+
   @findById: (id) ->
     rslt = gm for gm in @active_games when gm._id is id
     return rslt[0] if rslt?.length >= 1
-    console.dir( id is '23')
     if id is '23'
       rslt = new GameState()
       rslt._id = '23'
