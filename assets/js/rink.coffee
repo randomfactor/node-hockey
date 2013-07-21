@@ -16,6 +16,7 @@ class Rink
   # player id used to highlight this player (P1, P2, etc.)
   constructor: (@player_id, @game_state_id) ->
     @is_watching = false
+    @loading = null
 
   start_watching: ->
     unless @is_watching
@@ -28,8 +29,11 @@ class Rink
       clearInterval @watch_timer_id
 
   watch: ->
+    # don't overrun server if request is already pending
+    return if @loading? and new Date().getTime() - @loading < 500
+    @loading = new Date().getTime()
     $.get "/gs/#{@game_state_id}", (data) =>
-      console.dir(data.home_team_players[0].position.x)
+      @loading = null
       @render(data)
 
   # render uses the gamestate (gs) from the server to render all
