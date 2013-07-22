@@ -18,7 +18,7 @@ app.configure ->
   app.set 'views', __dirname + '/views'
   app.set 'view engine', 'jade'
   app.use express.favicon()
-  app.use express.logger('dev')
+  # app.use express.logger('dev')
   app.use express.bodyParser()
   app.use express.methodOverride()
   app.use express.cookieParser()
@@ -41,6 +41,7 @@ app.configure ->
   app.get '/users', user.list
   app.get '/ping', routes.ping
   app.get '/gs/:id', routes.gamestate
+  app.post '/gs/:id', routes.set_acceleration
 
 http.createServer(app).listen app.get('port'), ->
   console.log "Express server listening on port #{ app.get 'port' }"

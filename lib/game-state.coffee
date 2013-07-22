@@ -100,21 +100,61 @@ class GameState
     new_player
 
   update_player_position: (p, t0, t1) ->
-    delta_t = (t1 - t0) / 30.0
-    p.acceleration.regulate_acceleration p.velocity
-    p.position.set Vector.compute_position p.position, p.velocity, p.acceleration, delta_t
-    p.velocity.set Vector.compute_velocity p.velocity, p.acceleration, delta_t
-    p.velocity.regulate_velocity
+    if p.player_status is 'active'
+      if @is_out_of_bounds p.position, PLAYER_RADIUS, RINK_BBOX
+        # console.dir p
+        p.player_status = 'penalty'
+        p.position = new Vector 0, -600 # out of sight
+        p.velocity = new Vector ZERO_V
+        p.acceleration = new Vector ZERO_V
+        p.active_ts = new Date()
+        return p
+      delta_t = (t1 - t0) / 30.0
+      p.acceleration.regulate_acceleration p.velocity
+      p.position.set Vector.compute_position p.position, p.velocity, p.acceleration, delta_t
+      p.velocity.set Vector.compute_velocity p.velocity, p.acceleration, delta_t
+      p.velocity.regulate_velocity
+      @check_and_maybe_bounce p.position, p.velocity, p.acceleration, PLAYER_RADIUS, RINK_BBOX
     p
+
+  check_and_maybe_bounce: (pos, vel, accel, r, bbox) ->
+    if pos.x < bbox.x0 + r
+      accel.x = 0 if accel.x < 0
+      vel.x = - vel.x
+      pos.x =  2 * (bbox.x0 + r) - pos.x
+    else if pos.x > bbox.x1 - r
+      accel.x = 0 if accel.x > 0
+      vel.x = - vel.x
+      pos.x = 2 * (bbox.x1 - r) - pos.x
+    if pos.y < bbox.y0 + r
+      accel.y = 0 if accel.y < 0
+      vel.y = - vel.y
+      pos.y = 2 * (bbox.y0 + r) - pos.y
+    else if pos.y > bbox.y1 - r
+      accel.y = 0 if accel.y > 0
+      vel.y = - vel.y
+      pos.y = 2 * (bbox.y1 - r) - pos.y
 
   update_puck_position: (t0, t1) ->
     delta_t = (t1 - t0) / 30.0
     # TODO:
-    @puck.position.set Vector.compute_position @puck.position, @puck.velocity, ZERO_ACCELERATION, delta_t
+    @puck.position.set Vector.compute_position @puck.position, @puck.velocity, ZERO_V, delta_t
+    @check_and_maybe_bounce @puck.position, @puck.velocity, ZERO_V, PUCK_RADIUS, RINK_BBOX
     @puck
+
+  is_out_of_bounds: (pos, r, bbox) ->
+    pos.x < bbox.x0 + r or pos.x > bbox.x1 - r or pos.y < bbox.y0 + r or pos.y > bbox.y1 - r
 
   tick_from_date: (d) ->
     Math.round(d.getTime() * 30 / 1000)
+
+  set_acceleration: (pname, acc_x, acc_y) ->
+    console.log "setting #{pname} acceleration to #{acc_x}, #{acc_y}"
+    acc = new Vector acc_x, acc_y
+    magnitude = acc.magnitude()
+    acc = acc.scale(MAX_ACCELERATION / magnitude) if magnitude > MAX_ACCELERATION
+    p.acceleration = acc for p in @home_team_players.concat @visiting_team_players when p.name is pname
+    acc
 
   @find_by_id: (id) ->
     rslt = (gm for gm in @active_games when gm._id is id)
@@ -122,15 +162,30 @@ class GameState
     if id is '23'
       rslt = new GameState()
       rslt._id = '23'
-      p = rslt.add_player "P1", true
-      p.velocity.set 20, -5
+      p1 = rslt.add_player "P1", true
+      p1.velocity.set 233, -56
+      p2 = rslt.add_player "P2", false
+      p2.acceleration.set -70, 20
+      p3 = rslt.add_player "P5", true
+      p3.velocity.set 400, 0
+      p3.acceleration.set 0, -80
+      rslt.puck.velocity.set -100, 100
       @active_games.push rslt
       return rslt
     undefined
 
-ZERO_ACCELERATION = new Vector()
+ZERO_V = new Vector()
 MAX_VELOCITY = 400 # units per second
-MAX_ACCELERATION = 80 # units per second per second
+MAX_ACCELERATION = 160 # units per second per second
+PLAYER_RADIUS = 70
+PUCK_RADIUS = 35
+BOUND_WID = 5
+RINK_BBOX = {
+  x0: -1000 + BOUND_WID,
+  y0: -1000 * 374 / 780 + BOUND_WID,
+  x1: 1000 - BOUND_WID,
+  y1: 1000 * 374 / 780
+}
 
 
 exports.GameState = GameState

@@ -17,6 +17,7 @@ class Rink
   constructor: (@player_id, @game_state_id) ->
     @is_watching = false
     @loading = null
+    @pos = new Pt 0, 0
 
   start_watching: ->
     unless @is_watching
@@ -35,6 +36,19 @@ class Rink
     $.get "/gs/#{@game_state_id}", (data) =>
       @loading = null
       @render(data)
+
+  send_acceleration_req: (canvas_x, canvas_y) ->
+    # convert canvas coords to rink coords
+    cwid = $('#playground').width()
+    chgt = $('#playground').height();
+    acc_x = 160 * ((canvas_x - cwid / 2) * 2000 / cwid - @pos.x) / 479.5
+    acc_y = 160 * ((canvas_y - chgt / 2) * 2000 / cwid - @pos.y) / 479.5
+    console.log "accel click: #{acc_x}, #{acc_y}"
+
+    post_data = { x: acc_x, y: acc_y }
+    $.post '/gs/23', post_data, (data, status) ->
+      console.log "accel response: #{status} - #{data}"
+
 
   # render uses the gamestate (gs) from the server to render all
   # player positions and the puck
@@ -60,9 +74,12 @@ class Rink
     @render_circle ctx, puck.position, _puck_rad, 'rgba(0,0,0,0.55)'
 
   render_player: (ctx, player, is_homey) ->
-    alpha = if player.name == @player_id then '1.0' else '0.55'
+    its_me = player.name == @player_id
+    @pos = player.position if its_me
+    alpha = if its_me then '1.0' else '0.55'
     styl = if is_homey then "rgba(128,128,255,#{alpha})" else "rgba(255,128,128,#{alpha})"
     @render_circle ctx, player.position, _player_rad, styl, player.name
+    @render_acceleration ctx, player.position, player.acceleration if its_me
 
   render_circle: (ctx, pos, rad, styl, lbl) ->
     ctx.save()
@@ -80,6 +97,18 @@ class Rink
       ctx.fillText lbl, pos.x, pos.y
     ctx.restore()
 
+  render_acceleration: (ctx, pos, accel) ->
+    ctx.save()
+    ctx.beginPath()
+    ctx.lineWidth = _line_wid / 2
+    ctx.strokeStyle = 'rgba(196,196,196,0.4)'
+    ctx.translate pos.x, pos.y
+    angle = Math.atan2 accel.y, accel.x
+    ctx.rotate angle
+    ctx.moveTo 0, 0
+    ctx.lineTo Math.sqrt(accel.x * accel.x + accel.y * accel.y) * 3, 0
+    ctx.stroke()
+    ctx.restore()
 
 class Pt
   constructor: (@x, @y) ->

@@ -69,6 +69,48 @@ describe "Calculate player next position", ->
       gs.update_player_position p, tick, tick + 1
     expect(p.acceleration.x).toBeCloseTo 0, 2
     done()
+  it "puts player in penalty state when boundary exceeded", (done) ->
+    gs = new GameState()
+    p = reinflate_player jcopy players[0]
+    tick = 41231410239
+    delta_ticks = 30 * ( 1470 + 1860 + 20) / 400 # enough ticks to cross rink twice
+    gs.update_player_position p, tick, tick + delta_ticks
+    expect(p.position.x).toBeLessThan -400 / 30
+    expect(p.player_status).toBe 'active'
+    gs.update_player_position p, tick + delta_ticks, tick + delta_ticks + 1
+    #console.dir p
+    expect(p.position.y).toBe -600
+    expect(p.player_status).toBe 'penalty'
+    done()
+
+describe "Rink edge", ->
+  it "bounces player off left wall", (done) ->
+    gs = new GameState()
+    p = reinflate_player jcopy players[3]
+    tick = 41231410239
+    delta_ticks = Math.ceil(30 * 100 / 200) # enough ticks to travel 100 units
+    #console.log "traveling for #{delta_ticks} ticks"
+    #console.dir p.position
+    gs.update_player_position p, tick, tick + delta_ticks
+    #console.dir p.position
+    expect(p.position.x).toBe -875
+    expect(p.position.y).toBe -375
+    expect(p.player_status).toBe 'active'
+    done()
+  it "bounces player off right and bottom walls", (done) ->
+    gs = new GameState()
+    p = reinflate_player jcopy players[4]
+    tick = 41231410239
+    delta_ticks = Math.ceil(30 * 210 / 200) # enough ticks to travel 210 units
+    #console.log "traveling for #{delta_ticks} ticks"
+    #console.dir p.position
+    gs.update_player_position p, tick, tick + delta_ticks
+    #console.dir p.position
+    expect(p.position.x).toBeCloseTo 782, 0
+    expect(p.position.y).toBeCloseTo 341, 0
+    expect(p.player_status).toBe 'active'
+    done()
+
 
 describe "Game state", ->
   it "finds game 23", ->
@@ -89,12 +131,20 @@ describe "Game state", ->
     gs.update gs.current_tick + 30
     #console.log util.inspect gs, { depth: 8 }
     expect(playa.position.x).toBe(xpos + 100)
+  it "set players acceleration", ->
+    gs = new GameState()
+    playa = gs.add_player 'P1', true
+    gs.set_acceleration 'P1', -60, 80
+    expect(playa.acceleration.x).toBe -48
+    expect(playa.acceleration.y).toBe 64
 
 
 players = [
   { name: 'P3', player_status: 'active', position: new Vector(-500, 0), velocity: new Vector(400, 0), acceleration: new Vector(0, 0), active_ts: 1374287939999  }
-  { name: 'P6', player_status: 'active', position: new Vector(-1000, 0), velocity: new Vector(0, 0), acceleration: new Vector(80, 0), active_ts: 1374287939999  }
-  { name: 'P7', player_status: 'active', position: new Vector(-1000, 0), velocity: new Vector(392, 0), acceleration: new Vector(72, 30), active_ts: 1374287939999  }
+  { name: 'P6', player_status: 'active', position: new Vector(-920, 0), velocity: new Vector(0, 0), acceleration: new Vector(80, 0), active_ts: 1374287939999  }
+  { name: 'P7', player_status: 'active', position: new Vector(-920, 0), velocity: new Vector(392, 0), acceleration: new Vector(72, 30), active_ts: 1374287939999  }
+  { name: 'P0', player_status: 'active', position: new Vector(-875, -400), velocity: new Vector(-200, 50), acceleration: new Vector(0, 0), active_ts: 1374287939999  }
+  { name: 'P1', player_status: 'active', position: new Vector(855, 264.5), velocity: new Vector(200, 200), acceleration: new Vector(0, 0), active_ts: 1374287939999  }
 ]
 
 jcopy = (obj) ->

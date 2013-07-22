@@ -32,6 +32,11 @@ App.PlayRoute = Ember.Route.extend  {
   model: () -> App.Game.find(2)
 }
 
+App.AccelerationView = Ember.View.extend {
+  click: (evt) ->
+    this.get('controller').send('onSetAcceleration', evt.offsetX, evt.offsetY)
+}
+
 App.PlayController = Ember.ObjectController.extend {
   # lagValues contains up to 10 net lag measurements in milliseconds
   # if showNetLag is false, lagValues <-- [] and N/A is displayed
@@ -39,6 +44,10 @@ App.PlayController = Ember.ObjectController.extend {
   showNetLag: false
   init: ->
     @_super()
+
+  onSetAcceleration: (x, y) ->
+    rink = @get('rink')
+    rink.send_acceleration_req x, y if rink?
 
   onShowNetLagChanged: (() ->
     @measureNetLag() if @showNetLag

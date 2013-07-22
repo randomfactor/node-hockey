@@ -72,7 +72,9 @@ block content
                 span#opponent-score {{visitingTeamScore}}
           .row
             .arena.span10.offset1.img-rounded
+              | {{#view App.AccelerationView}}
               canvas#playground(width='780', height='374')
+              | {{/view}}
           .row &nbsp;
           .row
             .offset1.span4
