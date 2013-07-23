@@ -12,6 +12,8 @@ _player_rad = 70.0
 _puck_rad = 70.0 / 2.0
 _font_pt = 48
 
+_max_accel = 160.0
+
 class Rink
   # player id used to highlight this player (P1, P2, etc.)
   constructor: (@player_id, @game_state_id) ->
@@ -43,11 +45,12 @@ class Rink
     chgt = $('#playground').height();
     acc_x = 160 * ((canvas_x - cwid / 2) * 2000 / cwid - @pos.x) / 479.5
     acc_y = 160 * ((canvas_y - chgt / 2) * 2000 / cwid - @pos.y) / 479.5
-    console.log "accel click: #{acc_x}, #{acc_y}"
+    #console.log "accel click: #{acc_x}, #{acc_y}"
 
     post_data = { x: acc_x, y: acc_y }
     $.post '/gs/23', post_data, (data, status) ->
-      console.log "accel response: #{status} - #{data}"
+      #console.log "accel response: #{status} - #{data}"
+      null
 
 
   # render uses the gamestate (gs) from the server to render all
@@ -105,8 +108,13 @@ class Rink
     ctx.translate pos.x, pos.y
     angle = Math.atan2 accel.y, accel.x
     ctx.rotate angle
-    ctx.moveTo 0, 0
-    ctx.lineTo Math.sqrt(accel.x * accel.x + accel.y * accel.y) * 3, 0
+    magnitude = Math.sqrt(accel.x * accel.x + accel.y * accel.y)
+    ctx.moveTo _player_rad + 10, 0
+    ctx.lineTo _player_rad + 10 + magnitude * 3, 0
+    for x in [magnitude - _max_accel / 14..0] by -_max_accel / 7
+      spur = (x - magnitude) / 2
+      ctx.moveTo x * 3 + _player_rad + 10, -spur
+      ctx.lineTo x * 3 + _player_rad + 10, spur
     ctx.stroke()
     ctx.restore()
 

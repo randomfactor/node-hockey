@@ -28,7 +28,6 @@ exports.gamestate = (req, res) ->
 
 exports.set_acceleration = (req, res) ->
   gs = gmst.GameState.find_by_id(req.params.id)
-  console.dir req.body
   if gs?
     gs.set_acceleration('P1', req.body.x, req.body.y)
     res.send('OK')

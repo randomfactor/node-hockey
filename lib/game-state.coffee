@@ -6,9 +6,11 @@
 uuid = require '../lib/math-uuid'
 
 class Vector
-  constructor: (@x=0, @y=0) ->
+  constructor: (x = 0, y = 0) ->
     if typeof @x is "object"
-      [@x, @y] = [@x.x, @x.y]
+      [@x, @y] = [ +@x.x, +@x.y ]
+    else
+      [@x, @y] = [ +x, +y ]
 
   @compute_position: (p0, v0, a, t) ->
     x = p0.x + v0.x * t + 0.5 * a.x * t * t
@@ -54,9 +56,10 @@ class Vector
 
   set: (x, y) ->
     if typeof x is "object"
-      [@x, @y] = [x.x, x.y]
+      [@x, @y] = [+x.x, +x.y]
     else
-      [@x, @y] = [x, y]
+      [@x, @y] = [+x, +y]
+    this
 
 class GameState
   constructor: ->
@@ -149,7 +152,7 @@ class GameState
     Math.round(d.getTime() * 30 / 1000)
 
   set_acceleration: (pname, acc_x, acc_y) ->
-    console.log "setting #{pname} acceleration to #{acc_x}, #{acc_y}"
+    #console.log "setting #{pname} acceleration to #{acc_x}, #{acc_y}"
     acc = new Vector acc_x, acc_y
     magnitude = acc.magnitude()
     acc = acc.scale(MAX_ACCELERATION / magnitude) if magnitude > MAX_ACCELERATION

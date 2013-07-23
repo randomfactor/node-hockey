@@ -134,9 +134,9 @@ describe "Game state", ->
   it "set players acceleration", ->
     gs = new GameState()
     playa = gs.add_player 'P1', true
-    gs.set_acceleration 'P1', -60, 80
-    expect(playa.acceleration.x).toBe -48
-    expect(playa.acceleration.y).toBe 64
+    gs.set_acceleration 'P1', -120, 160
+    expect(playa.acceleration.x).toBe -96
+    expect(playa.acceleration.y).toBe 128
 
 
 players = [
