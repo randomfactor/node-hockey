@@ -138,6 +138,42 @@ describe "Game state", ->
     expect(playa.acceleration.x).toBe -96
     expect(playa.acceleration.y).toBe 128
 
+describe "Player-puck collisions", ->
+  it "does not collide when players too far from puck", ->
+    gs = new GameState()
+    gs.visiting_team_players.push players[0]
+    gs.home_team_players.push players[1]
+    gs.visiting_team_players.push players[2]
+    collider = gs.find_nearest_colliding_player()
+    expect(collider).toBe null
+  it "collides when player meets puck", ->
+    gs = new GameState()
+    playa = gs.add_player 'P1', false
+    playa.position = new Vector -500, 0
+    playa.velocity = new Vector 400, 0
+    gs.puck.position = new Vector -429.3, -70.7
+    gs.puck.velocity = new Vector -100, 0
+    collider = gs.find_nearest_colliding_player()
+    expect(collider).toBe playa
+    expect(playa.is_colliding).toBeTruthy()
+    # stop colliding if receding
+    gs.puck.position = new Vector -510, -70.7
+    collider = gs.find_nearest_colliding_player()
+    expect(collider).toBe null
+    expect(playa.is_colliding).toBe undefined
+  it "computes new velocities for puck and collider", ->
+    gs = new GameState()
+    playa = gs.add_player 'P1', false
+    playa.position = new Vector -500, 0
+    playa.velocity = new Vector 400, 0
+    gs.puck.position = new Vector -429.3, -70.7
+    gs.puck.velocity = new Vector -100, 0
+    gs.collide_with_puck playa
+    expect(gs.puck.velocity.magnitude()).toBeCloseTo 377.905, 3
+    expect(playa.velocity.magnitude()).toBeCloseTo 283.395, 3
+
+
+
 
 players = [
   { name: 'P3', player_status: 'active', position: new Vector(-500, 0), velocity: new Vector(400, 0), acceleration: new Vector(0, 0), active_ts: 1374287939999  }

@@ -81,6 +81,7 @@ class Rink
     @pos = player.position if its_me
     alpha = if its_me then '1.0' else '0.55'
     styl = if is_homey then "rgba(128,128,255,#{alpha})" else "rgba(255,128,128,#{alpha})"
+    styl = 'rgba(255,255,0,1.0)' if player.is_colliding?
     @render_circle ctx, player.position, _player_rad, styl, player.name
     @render_acceleration ctx, player.position, player.acceleration if its_me
 

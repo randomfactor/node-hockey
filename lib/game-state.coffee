@@ -7,8 +7,8 @@ uuid = require '../lib/math-uuid'
 
 class Vector
   constructor: (x = 0, y = 0) ->
-    if typeof @x is "object"
-      [@x, @y] = [ +@x.x, +@x.y ]
+    if typeof x is "object"
+      [@x, @y] = [ +x.x, +x.y ]
     else
       [@x, @y] = [ +x, +y ]
 
@@ -86,6 +86,7 @@ class GameState
       @update_player_position(p, @current_tick, next_tick) for p in @visiting_team_players
       @update_puck_position @current_tick, next_tick
       @current_tick = next_tick
+      @handle_collisions()
 
   add_player: (name, is_homey) ->
     new_player = {
@@ -116,7 +117,7 @@ class GameState
       p.acceleration.regulate_acceleration p.velocity
       p.position.set Vector.compute_position p.position, p.velocity, p.acceleration, delta_t
       p.velocity.set Vector.compute_velocity p.velocity, p.acceleration, delta_t
-      p.velocity.regulate_velocity
+      p.velocity.regulate_velocity()
       @check_and_maybe_bounce p.position, p.velocity, p.acceleration, PLAYER_RADIUS, RINK_BBOX
     p
 
@@ -144,6 +145,44 @@ class GameState
     @puck.position.set Vector.compute_position @puck.position, @puck.velocity, ZERO_V, delta_t
     @check_and_maybe_bounce @puck.position, @puck.velocity, ZERO_V, PUCK_RADIUS, RINK_BBOX
     @puck
+
+  handle_collisions: ->
+    ncp = @find_nearest_colliding_player()
+    @collide_with_puck ncp if ncp?
+
+  find_nearest_colliding_player: ->
+    overlap_distance = PUCK_RADIUS + PLAYER_RADIUS
+    colliders = []
+    epsilon = 0.0005 # ignore player exactly on top of puck
+    for p in @home_team_players.concat @visiting_team_players
+      delta = new Vector @puck.position.x - p.position.x, @puck.position.y - p.position.y
+      dist = delta.magnitude()
+      if delta.magnitude() < overlap_distance and p.velocity.dot_product(delta) > @puck.velocity.dot_product(delta)
+        unless p.is_colliding? or dist < epsilon
+          colliders.push [dist, p]
+      else
+        delete p.is_colliding if p.is_colliding?
+    return null if colliders.length is 0
+    colliders.sort ((a,b) -> a[0] < b[0])
+    colliders[0][1].is_colliding = 1 # mark this player
+    colliders[0][1]
+
+  collide_with_puck: (p) ->
+    normal = new Vector @puck.position.x - p.position.x, @puck.position.y - p.position.y
+    normal = normal.scale 1.0 / normal.magnitude()
+    tangent = new Vector -normal.y, normal.x
+    ptan = tangent.scale p.velocity.dot_product tangent
+    ktan = tangent.scale @puck.velocity.dot_product tangent
+    pbefore = p.velocity.dot_product normal
+    kbefore = @puck.velocity.dot_product normal
+    pafter = @conservation_of_momentum pbefore, PLAYER_MASS, kbefore, PUCK_MASS
+    kafter = @conservation_of_momentum kbefore, PUCK_MASS, pbefore, PLAYER_MASS
+    p.velocity.set normal.scale(pafter).add ptan
+    p.velocity.regulate_velocity()
+    @puck.velocity.set normal.scale(kafter).add ktan
+
+  conservation_of_momentum: (v1, m1, v2, m2) ->
+    (v1 * (m1 - m2) + 2 * m2 * v2) / (m1 + m2)
 
   is_out_of_bounds: (pos, r, bbox) ->
     pos.x < bbox.x0 + r or pos.x > bbox.x1 - r or pos.y < bbox.y0 + r or pos.y > bbox.y1 - r
@@ -181,7 +220,9 @@ ZERO_V = new Vector()
 MAX_VELOCITY = 400 # units per second
 MAX_ACCELERATION = 160 # units per second per second
 PLAYER_RADIUS = 70
+PLAYER_MASS = 100
 PUCK_RADIUS = 35
+PUCK_MASS = 60
 BOUND_WID = 5
 RINK_BBOX = {
   x0: -1000 + BOUND_WID,
