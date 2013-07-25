@@ -16,6 +16,8 @@ App.Store = DS.Store.extend {
 }
 
 App.Game = DS.Model.extend {
+  rinkId: DS.attr('string')
+  gamestateId: DS.attr('string')
   homeTeamName: DS.attr('string')
   visitingTeamName: DS.attr('string')
   homeTeamScore: DS.attr('number')
@@ -23,13 +25,17 @@ App.Game = DS.Model.extend {
 }
 
 App.Game.FIXTURES = [
-  { id: 1, homeTeamName: 'Blackhawks', visitingTeamName: 'Bruins', homeTeamScore: 1, visitingTeamScore: 3 }
-  { id: 2, homeTeamName: 'Nerds', visitingTeamName: 'Jocks', homeTeamScore: 123, visitingTeamScore: 0 }
+  { id: 1, rinkId: '1', gamestateId: '23', homeTeamName: 'Blackhawks', visitingTeamName: 'Bruins', homeTeamScore: 1, visitingTeamScore: 3 }
+  { id: 2, rinkId: '2', gamestateId: '23', homeTeamName: 'Nerds', visitingTeamName: 'Jocks', homeTeamScore: 123, visitingTeamScore: 0 }
 ]
 
 
 App.PlayRoute = Ember.Route.extend  {
-  model: () -> App.Game.find(2)
+  model: () -> App.Game.find(1)
+
+  setupController: (controller, model) ->
+    controller.set 'model', model
+    controller.enroll() # add this player
 }
 
 App.AccelerationView = Ember.View.extend {
@@ -71,25 +77,31 @@ App.PlayController = Ember.ObjectController.extend {
     setTimeout (() => @measureNetLag()), 3000 if @showNetLag
 
   rink: null
+  is_watching: false
 
   cannotStart: ( ->
-    @get('rink')?
-  ).property('rink')
+    @get('is_watching')
+  ).property('is_watching')
 
   canStart: ( ->
-    not @get('rink')?
-  ).property('rink')
+    not @get('is_watching')
+  ).property('is_watching')
+
+  enroll: ->
+    console.dir @get('gamestateId')
+    gs_id = @get('gamestateId')
+    $.post "/gs/#{gs_id}/add", { }, (data, stat, xhr) =>
+      pname = data.player_name
+      @set 'rink', new Rink pname, gs_id
+      @startWatching()
 
   startWatching: ->
-    @set 'rink', new Rink 'P1', '23'
     @get('rink').start_watching()
+    @set 'is_watching', true
 
   stopWatching: ->
+    @set 'is_watching', false
     @get('rink').stop_watching()
-    @set 'rink', null
-
-
-
 }
 
 window.App = App                         # for debugging

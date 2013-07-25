@@ -125,7 +125,9 @@ describe "Game state", ->
     expect(gs).toBeUndefined()
   it "updates itself for the next tick", ->
     gs = new GameState()
-    playa = gs.add_player 'P1', true
+    playa = gs.add_player()
+    expect(playa.name).toBe 'P1'
+    expect(gs.home_team_players.length).toBe 1
     xpos = playa.position.x
     gs.home_team_players[0].velocity = new Vector 100, 0
     gs.update gs.current_tick + 30

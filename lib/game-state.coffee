@@ -89,6 +89,14 @@ class GameState
       @handle_collisions()
 
   add_player: (name, is_homey) ->
+    unless name?
+      used = (p.name for p in @home_team_players.concat @visiting_team_players)
+      hasno = (val, arr) -> (n for n in arr when n is val).length is 0
+      for pn in [1..16] when hasno("P#{pn}", used)
+        name = "P#{pn}"
+        break
+    unless is_homey?
+      is_homey = @home_team_players.length <= @visiting_team_players.length
     new_player = {
       name: name
       player_status: 'active' # TODO: change to 'rezzing'
@@ -208,10 +216,7 @@ class GameState
       p1.velocity.set 233, -56
       p2 = rslt.add_player "P2", false
       p2.acceleration.set -70, 20
-      p3 = rslt.add_player "P5", true
-      p3.velocity.set 400, 0
-      p3.acceleration.set 0, -80
-      rslt.puck.velocity.set -100, 100
+      rslt.puck.velocity.set -120, 100
       @active_games.push rslt
       return rslt
     undefined

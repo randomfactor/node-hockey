@@ -13,7 +13,7 @@ x	10. Implement (non-colliding) player position computation
 x	11. Update game state when requested at /gs/:id
 x	12. Implement player and puck wall collision
 x   13. Set acceleration from mouse event
-	14. Implement collision between player and puck
+x	14. Implement collision between player and puck
 	15. Update players via websockets
 
 

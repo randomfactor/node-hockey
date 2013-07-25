@@ -29,7 +29,17 @@ exports.gamestate = (req, res) ->
 exports.set_acceleration = (req, res) ->
   gs = gmst.GameState.find_by_id(req.params.id)
   if gs?
-    gs.set_acceleration('P1', req.body.x, req.body.y)
-    res.send('OK')
+    gs.set_acceleration(req.session.player_name, req.body.x, req.body.y)
+    res.json('OK')
+  else
+    res.status(404).send('Not found.')
+
+exports.add_player = (req, res) ->
+  gs = gmst.GameState.find_by_id(req.params.id)
+  if gs?
+    p = gs.add_player()
+    req.session.player_name = p.name
+    req.session.gamestate_id = gs._id
+    res.json { gamestate_id: gs._id, player_name: p.name }
   else
     res.status(404).send('Not found.')

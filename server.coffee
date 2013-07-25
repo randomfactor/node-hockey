@@ -42,6 +42,7 @@ app.configure ->
   app.get '/ping', routes.ping
   app.get '/gs/:id', routes.gamestate
   app.post '/gs/:id', routes.set_acceleration
+  app.post '/gs/:id/add', routes.add_player
 
 http.createServer(app).listen app.get('port'), ->
   console.log "Express server listening on port #{ app.get 'port' }"
