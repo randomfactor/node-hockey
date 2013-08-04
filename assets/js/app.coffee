@@ -1,13 +1,13 @@
 App = Ember.Application.create { rootElement: '#content', LOG_TRANSITIONS: true }
 
 App.Router.map () ->
-  this.route 'index'
+  this.route 'intro'
   this.route 'play'
 
 App.IndexRoute = Ember.Route.extend {
   redirect: ->
-    @transitionTo('index')
-  model: () -> ['red', 'yellow', 'blue']
+    console.log 'transition to intro'
+    @transitionTo('intro')
 }
 
 App.Store = DS.Store.extend {

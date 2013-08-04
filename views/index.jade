@@ -18,13 +18,13 @@ block content
                     a.brand(href='/')= title
                     .nav-collapse.collapse
                         ul.nav
-                            li {{#linkTo 'index'}}Home{{/linkTo}}
+                            li {{#linkTo 'intro'}}Home{{/linkTo}}
                             li {{#linkTo 'play'}}Play Hockey{{/linkTo}}
 
         #main
             {{outlet}}
 
-    script(type="text/x-handlebars", data-template-name="index")
+    script(type="text/x-handlebars", data-template-name="intro")
         .hero-unit
           h1 Introduction
           p

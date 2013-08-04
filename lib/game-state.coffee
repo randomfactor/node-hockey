@@ -131,10 +131,12 @@ class GameState
 
   check_and_maybe_bounce: (pos, vel, accel, r, bbox) ->
     if pos.x < bbox.x0 + r
+      # TODO: check if puck intercept at x=-1000 would go through goal
       accel.x = 0 if accel.x < 0
       vel.x = - vel.x
       pos.x =  2 * (bbox.x0 + r) - pos.x
     else if pos.x > bbox.x1 - r
+      # TODO: check if puck intercept at x=1000 would go through goal
       accel.x = 0 if accel.x > 0
       vel.x = - vel.x
       pos.x = 2 * (bbox.x1 - r) - pos.x
@@ -229,6 +231,7 @@ PLAYER_MASS = 100
 PUCK_RADIUS = 35
 PUCK_MASS = 60
 BOUND_WID = 5
+GOAL_HALF_WID = 91 - 35
 RINK_BBOX = {
   x0: -1000 + BOUND_WID,
   y0: -1000 * 374 / 780 + BOUND_WID,

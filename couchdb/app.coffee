@@ -6,7 +6,10 @@ ddoc = {
   views:
     gamestateByStart:
       map: (doc) ->
-        emit doc.start_ts, doc._id if doc.type == "GameState"
+        emit doc.start_ts, doc._id if doc.type is "GameState"
+    rinkstateByCreate:
+      map: (doc) ->
+        emit doc.create_ts, true if doc.type is "RinkState"
   lists: {}
   shows: {}
 }

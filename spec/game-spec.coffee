@@ -3,7 +3,7 @@ Vector = game.Vector
 GameState = game.GameState
 util = require 'util'
 
-describe "Vector constructor", ->
+xdescribe "Vector constructor", ->
   it "defaults to the origin", ->
     v = new Vector()
     expect(v.x).toBe(0)
@@ -17,7 +17,7 @@ describe "Vector constructor", ->
     expect(v.x).toBe 3
     expect(v.y).toBe 4
 
-describe "Vector operations", ->
+xdescribe "Vector operations", ->
   it "computes a new position", ->
     p0 = new Vector(0, 16)
     v = new Vector(16, 0)
@@ -47,7 +47,7 @@ describe "Vector operations", ->
     expect(v1.magnitude()).not.toBeGreaterThan 400
 
 
-describe "Calculate player next position", ->
+xdescribe "Calculate player next position", ->
   it "computes the next player position (constant velocity)", (done) ->
     gs = new GameState()
     p = reinflate_player jcopy players[0]
@@ -83,7 +83,7 @@ describe "Calculate player next position", ->
     expect(p.player_status).toBe 'penalty'
     done()
 
-describe "Rink edge", ->
+xdescribe "Rink edge", ->
   it "bounces player off left wall", (done) ->
     gs = new GameState()
     p = reinflate_player jcopy players[3]
@@ -111,8 +111,24 @@ describe "Rink edge", ->
     expect(p.player_status).toBe 'active'
     done()
 
+describe "Rink goal", ->
+  it "scores for opponent", (done) ->
+    gs = new GameState()
+    gs.puck = {
+      puck_status: 'active'
+      position: new Vector -920, 80
+      velocity: new Vector -400, -400
+    }
+    tick = 41231410239
+    delta_ticks = Math.ceil(30 * 115/ 400) # enough ticks to travel 210 units
+    gs.update_puck_position tick, tick + delta_ticks
+    pos = gs.puck.position
+    expect(pos.x).toBeLessThan -1035
+    expect(pos.y).toBeLessThan -35
+    done()
 
-describe "Game state", ->
+
+xdescribe "Game state", ->
   it "finds game 23", ->
     gs23 = GameState.find_by_id('23')
     expect(gs23).not.toBeUndefined
@@ -140,7 +156,7 @@ describe "Game state", ->
     expect(playa.acceleration.x).toBe -96
     expect(playa.acceleration.y).toBe 128
 
-describe "Player-puck collisions", ->
+xdescribe "Player-puck collisions", ->
   it "does not collide when players too far from puck", ->
     gs = new GameState()
     gs.visiting_team_players.push players[0]

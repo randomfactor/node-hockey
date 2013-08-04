@@ -6,6 +6,7 @@ Module dependencies
 express = require 'express'
 routes = require './routes'
 user = require './routes/user'
+rink = require './routes/rink'
 http = require 'http'
 path = require 'path'
 assets = require 'connect-assets'
@@ -43,6 +44,13 @@ app.configure ->
   app.get '/gs/:id', routes.gamestate
   app.post '/gs/:id', routes.set_acceleration
   app.post '/gs/:id/add', routes.add_player
+
+  app.get '/rinks', rink.index
+  app.post '/rinks', rink.create
+  app.get '/rinks/:id', rink.find
+  app.put '/rinks/:id', rink.modify
+  app.delete 'rinks/:id', rink.delete
+
 
 http.createServer(app).listen app.get('port'), ->
   console.log "Express server listening on port #{ app.get 'port' }"
