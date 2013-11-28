@@ -1,9 +1,35 @@
 game = require '../lib/game-state'
 Vector = game.Vector
 GameState = game.GameState
-util = require 'util'
+util = require 'util' 
 
-xdescribe "Vector constructor", ->
+describe "Goal", ->
+  gs = new GameState()
+  it "cannot be made with player", ->
+    val = gs.possible_goal(-995, new Vector(-990, 0), new Vector(-50, 0), 70)
+    expect(val).toBeFalsy()
+  it "goes straight in", ->
+    val = gs.possible_goal(-995, new Vector(-990, 0), new Vector(-50, 0), 35)
+    expect(val).toBeTruthy()
+  it "goes in at an angle", ->
+    val = gs.possible_goal(995, new Vector(900, -95 - 56), new Vector(100, 100), 35)
+    expect(val).toBeTruthy()
+  it "went through goal", ->
+    val = gs.possible_goal(995, new Vector(1100, 161), new Vector(100, 100), 35)
+    expect(val).toBeTruthy()
+  it "path has too steep an angle", ->
+    val = gs.possible_goal(995, new Vector(910, -113 - 56), new Vector(90, 120), 35)
+    expect(val).toBeFalsy()
+  it "scores home team", ->
+    gs.puck.position.set(1000.1, 23.45)
+    gs.handle_goal()
+    expect(gs.home_team_score).toBe 1
+  it "scores visiting team", ->
+    gs.puck.position.set(-1000.1, 23.45)
+    gs.handle_goal()
+    expect(gs.visiting_team_score).toBe 1
+
+describe "Vector constructor", ->
   it "defaults to the origin", ->
     v = new Vector()
     expect(v.x).toBe(0)
@@ -17,7 +43,7 @@ xdescribe "Vector constructor", ->
     expect(v.x).toBe 3
     expect(v.y).toBe 4
 
-xdescribe "Vector operations", ->
+describe "Vector operations", ->
   it "computes a new position", ->
     p0 = new Vector(0, 16)
     v = new Vector(16, 0)
@@ -47,7 +73,7 @@ xdescribe "Vector operations", ->
     expect(v1.magnitude()).not.toBeGreaterThan 400
 
 
-xdescribe "Calculate player next position", ->
+describe "Calculate player next position", ->
   it "computes the next player position (constant velocity)", (done) ->
     gs = new GameState()
     p = reinflate_player jcopy players[0]
@@ -83,7 +109,7 @@ xdescribe "Calculate player next position", ->
     expect(p.player_status).toBe 'penalty'
     done()
 
-xdescribe "Rink edge", ->
+describe "Rink edge", ->
   it "bounces player off left wall", (done) ->
     gs = new GameState()
     p = reinflate_player jcopy players[3]
@@ -107,7 +133,7 @@ xdescribe "Rink edge", ->
     gs.update_player_position p, tick, tick + delta_ticks
     #console.dir p.position
     expect(p.position.x).toBeCloseTo 782, 0
-    expect(p.position.y).toBeCloseTo 341, 0
+    expect(p.position.y).toBeCloseTo 331, 0
     expect(p.player_status).toBe 'active'
     done()
 
@@ -128,7 +154,7 @@ describe "Rink goal", ->
     done()
 
 
-xdescribe "Game state", ->
+describe "Game state", ->
   it "finds game 23", ->
     gs23 = GameState.find_by_id('23')
     expect(gs23).not.toBeUndefined
@@ -156,7 +182,7 @@ xdescribe "Game state", ->
     expect(playa.acceleration.x).toBe -96
     expect(playa.acceleration.y).toBe 128
 
-xdescribe "Player-puck collisions", ->
+describe "Player-puck collisions", ->
   it "does not collide when players too far from puck", ->
     gs = new GameState()
     gs.visiting_team_players.push players[0]

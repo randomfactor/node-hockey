@@ -87,6 +87,21 @@ class GameState
       @update_puck_position @current_tick, next_tick
       @current_tick = next_tick
       @handle_collisions()
+      @handle_goal() if Math.abs(@puck.position.x) > 1000
+
+  handle_goal: ->
+    if @puck.position.x < -1000
+      @visiting_team_score += 1
+      @puck_init()
+    else if @puck.position.x > 1000
+      @home_team_score += 1
+      @puck_init()
+    undefined
+
+  puck_init: ->
+    @puck.position.set(0, 0)
+    @puck.velocity.set(Math.random() * 40 - 20, Math.random() * 40 - 20)
+    @puck.puck_status = 'active'
 
   add_player: (name, is_homey) ->
     unless name?
@@ -130,12 +145,12 @@ class GameState
     p
 
   check_and_maybe_bounce: (pos, vel, accel, r, bbox) ->
-    if pos.x < bbox.x0 + r
+    if pos.x < bbox.x0 + r and not @possible_goal(bbox.x0, pos, vel, r)
       # TODO: check if puck intercept at x=-1000 would go through goal
       accel.x = 0 if accel.x < 0
       vel.x = - vel.x
       pos.x =  2 * (bbox.x0 + r) - pos.x
-    else if pos.x > bbox.x1 - r
+    else if pos.x > bbox.x1 - r and not @possible_goal(bbox.x1, pos, vel, r)
       # TODO: check if puck intercept at x=1000 would go through goal
       accel.x = 0 if accel.x > 0
       vel.x = - vel.x
@@ -148,6 +163,23 @@ class GameState
       accel.y = 0 if accel.y > 0
       vel.y = - vel.y
       pos.y = 2 * (bbox.y1 - r) - pos.y
+
+  possible_goal: (x_intercept, pos, vel, r) ->
+    return false if r isnt PUCK_RADIUS
+
+    is_approaching_or_beyond = (x_intercept - pos.x) / vel.x > 0 or Math.abs(pos.x) - Math.abs(x_intercept) > 0
+    return false if not is_approaching_or_beyond
+
+    y_intercept = pos.y + vel.y * ((x_intercept - pos.x) / vel.x)
+    console.log "y intercept is: " + y_intercept if Math.abs(y_intercept) < GOAL_HALF_WID and Math.abs(pos.x) < 1000
+    return false if y_intercept > GOAL_HALF_WID - r / 2 or y_intercept < -GOAL_HALF_WID + r / 2
+
+    bouncex_intercept = x_intercept - r * Math.abs(x_intercept) / x_intercept
+    y_intercept = pos.y + vel.y * ((bouncex_intercept - pos.x) / vel.x)
+    console.log "bounce intercept is: " + y_intercept if Math.abs(pos.x) < 1000
+    return false if y_intercept > GOAL_HALF_WID or y_intercept < -GOAL_HALF_WID
+
+    true
 
   update_puck_position: (t0, t1) ->
     delta_t = (t1 - t0) / 30.0
@@ -231,12 +263,12 @@ PLAYER_MASS = 100
 PUCK_RADIUS = 35
 PUCK_MASS = 60
 BOUND_WID = 5
-GOAL_HALF_WID = 91 - 35
+GOAL_HALF_WID = 91
 RINK_BBOX = {
   x0: -1000 + BOUND_WID,
   y0: -1000 * 374 / 780 + BOUND_WID,
   x1: 1000 - BOUND_WID,
-  y1: 1000 * 374 / 780
+  y1: 1000 * 374 / 780 - BOUND_WID
 }
 
 
